@@ -1,0 +1,1 @@
+cd 'C:\Documents and Settings\rhmiyakawa\My Documents\MATLAB\from patrick\mast'

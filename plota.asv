@@ -1,0 +1,5 @@
+function [] = plota(firstArg, nextArg)
+if nargin == 2
+    
+
+plot(abs(img));
