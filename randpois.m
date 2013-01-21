@@ -50,7 +50,8 @@ if n == 1  % single random number requested
         out=j;
 	end;
 else    % series of random numbers requested
-    for k=w'
+    for m=1:length(w)
+        k = w(m);
 		if a(k)>500   % approximate as Gaussian when mean > 500
             out(k)=randn*sqrt(a(k))+a(k);
         else
@@ -59,10 +60,14 @@ else    % series of random numbers requested
             j=0;
             F=p;
             u=rand(1);
+            try
             while( u>F),
                 j=j+1;
                 p=lamb*p/j; F=F+p; 
             end;
+            catch
+                1
+            end
             out(k)=j;
 		end;
     end;
