@@ -37,10 +37,5 @@ end
 
 % Interpolate over area
 if nargin == 3 && strcmp(flag, 'fn')
-    ridx = linspace(-1, 1, size(domain, 1));
-    cidx = linspace(-1, 1, size(domain, 2));
-    [X, Y] = meshgrid(ridx, cidx);
-%     fnOut = @(x,y) exp(2i*pi*interp2(X, Y, out, x, y));
-    fnOut = @(x,y) interp2(X, Y, out, x, y);
-    out = fnOut;
+    
 end

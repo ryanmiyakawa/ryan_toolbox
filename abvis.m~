@@ -22,7 +22,7 @@ function varargout = abvis(varargin)
 
 % Edit the above text to modify the response to help abvis
 
-% Last Modified by GUIDE v2.5 28-Nov-2012 12:46:57
+% Last Modified by GUIDE v2.5 28-Nov-2012 13:19:58
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -111,13 +111,15 @@ end
 if isempty(handles.labels)
     handles = rmfield(handles, 'labels');
     for k = 1:length(handles.rec)
-        handles.labels(k) = num2str(k);
+       
+        handles.labels{k} = num2str(k);
+        
     end
 end
 for k = 1:length(handles.rec)
-    thisStr = sprintf('V_%s: %0.2f  %s|', handles.labels(k), handles.rec(k), removeShowVec{k});
+    thisStr = sprintf('V_%s: %0.3f  %s|', handles.labels{k}, handles.rec(k), removeShowVec{k});
     if k == length(handles.rec)
-        thisStr = sprintf('V_%s: %0.2f  %s', handles.labels(k), handles.rec(k), removeShowVec{k});
+        thisStr = sprintf('V_%s: %0.3f  %s', handles.labels{k}, handles.rec(k), removeShowVec{k});
     end
     handles.listTxt = [handles.listTxt thisStr];
     
@@ -125,6 +127,13 @@ end
 
 set(handles.listbox, 'string', handles.listTxt);
 
+% restem:
+set(handles.fig, 'currentaxes', handles.axes2);
+msk = 1 - handles.removeVec;
+if size(handles.rec, 1) > size(handles.rec, 2)
+    msk = msk'
+end
+stem(handles.rec.*msk);
 
 guidata(handles.fig, handles);
 
@@ -160,22 +169,33 @@ end
 set(handles.fig, 'currentaxes', handles.axes1)
 if val == 1
     % remove abs from wave:
-    sb = zeros(handles.wave);
+    sb = zeros(size(handles.wave));
+    ad = zeros(size(handles.wave));
     for k = 1:length(handles.rec)
-        if handles.removeVec(k) == 1
+        if handles.removeVec(k) == 0
+            ad = ad + handles.rec(k)*handles.basis{k}.*handles.mask;
             continue;
         end
-        sb = sb + handles.r
+        sb = sb + handles.rec(k)*handles.basis{k}.*handles.mask;
+    end
+    imagesc(handles.wave.*handles.mask - sb);
+    colorbar
     
+    numPts = length(find(handles.wave.*handles.mask));
+    
+    conEr = sqrt(sum(sum(abs(handles.wave.*handles.mask - ad - sb).^2))/numPts);
+    set(handles.conEr, 'st
     
     
 else
     imagesc(handles.basis{val - 1})
     ckVal = handles.removeVec(val - 1);
     set(handles.removeCB, 'value', ckVal);
+    colorbar
 end
 axis off
 axis image
+
 
 
 
@@ -220,6 +240,3 @@ updateListbox(handles)
 
 % --- Executes on key press with focus on listbox and none of its controls.
 function listbox_KeyPressFcn(hObject, eventdata, handles)
-
-
-

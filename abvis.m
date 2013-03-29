@@ -22,7 +22,7 @@ function varargout = abvis(varargin)
 
 % Edit the above text to modify the response to help abvis
 
-% Last Modified by GUIDE v2.5 28-Nov-2012 13:19:58
+% Last Modified by GUIDE v2.5 02-Feb-2013 09:03:23
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -94,6 +94,7 @@ set(handles.removeCB, 'visible', 'off');
 set(handles.listbox, 'value', 1);
 guidata(handles.fig, handles);
 updateListbox(handles)
+listbox_Callback(handles.listbox, [], handles)
 
 function updateListbox(handles)
 handles = guidata(handles.fig);
@@ -170,14 +171,24 @@ set(handles.fig, 'currentaxes', handles.axes1)
 if val == 1
     % remove abs from wave:
     sb = zeros(size(handles.wave));
+    ad = zeros(size(handles.wave));
     for k = 1:length(handles.rec)
         if handles.removeVec(k) == 0
+            ad = ad + handles.rec(k)*handles.basis{k}.*handles.mask;
             continue;
         end
         sb = sb + handles.rec(k)*handles.basis{k}.*handles.mask;
     end
     imagesc(handles.wave.*handles.mask - sb);
     colorbar
+    
+    numPts = length(find(handles.wave.*handles.mask));
+    
+    rmsEr = 1000*sqrt(sum(sum(abs(ad).^2))/numPts);
+    conEr = 1000*sqrt(sum(sum(abs(handles.wave.*handles.mask - ad - sb).^2))/numPts);
+    set(handles.conEr, 'string', sprintf('%0.1f', conEr));
+    set(handles.rmsEr, 'string', sprintf('%0.1f', rmsEr));
+    
     
 else
     imagesc(handles.basis{val - 1})
@@ -232,3 +243,49 @@ updateListbox(handles)
 
 % --- Executes on key press with focus on listbox and none of its controls.
 function listbox_KeyPressFcn(hObject, eventdata, handles)
+
+
+
+function rmsEr_Callback(hObject, eventdata, handles)
+% hObject    handle to rmsEr (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of rmsEr as text
+%        str2double(get(hObject,'String')) returns contents of rmsEr as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function rmsEr_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to rmsEr (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function conEr_Callback(hObject, eventdata, handles)
+% hObject    handle to conEr (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of conEr as text
+%        str2double(get(hObject,'String')) returns contents of conEr as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function conEr_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to conEr (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
