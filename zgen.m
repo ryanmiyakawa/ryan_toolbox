@@ -19,15 +19,21 @@ switch flag
     case 'pt'
         xind = domain(:,1);
         yind = domain(:,2);
-        [TH R] = cart2pol(xind, yind);
+        [TH, R] = cart2pol(xind, yind);
         [n, m] = j2nm(order);
         Z = ZgenNM(n, m);
         out = Z(R, TH);
-        out(R>1) = 0;
+        out(R>1) = nan;
+        ZgenNMshow(n, m, R, TH);
     case 'fn'
         [n, m] = j2nm(order);
         zRTH = ZgenNM(n,m);
         out = @(x,y) zRTH(sqrt(x.^2 + y.^2), atan2(y,x));
+    case 'fnr'
+        [n, m] = j2nm(order);
+        zRTH = ZgenNM(n,m);
+        out = @(r,th) zRTH(r, th);
+        
     case 'none'
         if length(domain) == 1
             % assume DOMAIN is specifying resolution
@@ -44,7 +50,18 @@ switch flag
         z = Z(R, TH);
         out = domain;
         out(idx) = z;
-
+    case 'basis'
+        [sy, sx] = size(domain);
+        xind = linspace(-1, 1, sx);
+        yind = linspace(-1, 1, sy);
+        [X, Y] = meshgrid(xind, yind);
+        out = zeros(sx*sy, order + 1);
+        out(:,1) = domain(:);
+        for k = 1:order
+            [n, m] = j2nm(k);
+            zRTH = ZgenNM(n,m);
+            out(:, k+1) = zRTH(sqrt(X(:).^2 + Y(:).^2), atan2(Y(:),X(:))).*domain(:);
+        end
 end
 
 
@@ -53,11 +70,19 @@ R = RgenNM(n,abs(m));
 A = AgenNM(m);
 Z = @(r, phi) R(r).*A(phi);
 
+
+function ZgenNMshow(n,m, r, phi)
+R = RgenNM(n,abs(m));
+A = AgenNM(m);
+
+
 % Forms radial function based on n,m
 function f = RgenNM(n,m)
 p = (n-m)/2;
 f = @(r) 0;
+
 for k = 0:p
+    %fprintf('[%d, %d], [%d, %d]\n',n-k, k, n-2*k,  (n-m)/2-k);
     f = @(r) f(r) +  (-1)^k*nchoosek(n-k,k)*nchoosek(n-2*k,(n-m)/2-k)*r.^(n - 2*k);
 end
 

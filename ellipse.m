@@ -4,7 +4,7 @@ ma = max(a,b);
 mi = min(a,b);
 
 if nargin == 2
-    r = ma;
+    r = mi;
     c = ma;
 end
 
@@ -22,4 +22,4 @@ end
 frame = zeros(ma);
 frame(X.^2/(b/ma)^2+Y.^2/(a/ma)^2 <= 1) = 1;
 
-p = pad2(frame, r,c);
+p = crop2(frame, r,c);

@@ -1,3 +1,6 @@
+% Aberration visualizer, call with arguments:
+% abvis(wave, basis, rec, mask)
+
 function varargout = abvis(varargin)
 % ABVIS M-file for abvis.fig
 %      ABVIS, by itself, creates a new ABVIS or raises the existing
@@ -130,6 +133,7 @@ set(handles.listbox, 'string', handles.listTxt);
 
 % restem:
 set(handles.fig, 'currentaxes', handles.axes2);
+colormap hot
 msk = 1 - handles.removeVec;
 if size(handles.rec, 1) > size(handles.rec, 2)
     msk = msk'

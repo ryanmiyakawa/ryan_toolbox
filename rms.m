@@ -1,5 +1,9 @@
-function r = rms(in)
+% Computes the RMS value of a wave over a domain
 
-s = in(:).^2;
-m = mean(s);
-r = sqrt(m); 
+function r = rms(wave, domain)
+
+if nargin == 1
+    domain = wave ~= 0;
+end
+
+r = sqrt(mean(wave(logical(domain)).^2));

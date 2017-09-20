@@ -11,31 +11,35 @@
 % piston, and the second column specifies the magnitude
 
 
-function out = abdom(domain, coef, flag)
-
+function out = abdom_fn(coef)
+fnCoef = [];
 [sr, sc] = size(coef);
-out = zeros(size(domain));
 switch sc
     case 1
         for k = 1:sr
-            out = out + coef(k)*zgen(domain, k-1);
+            fnAr{k} = zgen([], k-1, 'fn');
+            fnCoef(k) = coef(k);
         end
     case 2
-        
         for k = 1:sr
-            out = out + coef(k,2)*zgen(domain, coef(k,1));
+            fnAr{k} = zgen([], coef(k,1), 'fn');
+            fnCoef(k) = coef(k,2);
         end
     otherwise
         if sr == 1 % then this is case 1 but vector is transposed:
-            out = abdom(domain, coef');
+            out = abdom(coef');
         end
 end
+out = @(x,y) fnSum(fnAr, fnCoef, x, y);
 
-if nargin == 3 && strcmp(flag, 'ph')
-    out = exp(2i*pi*out).*domain;
+
+
+
+
+function out = fnSum(fnAr, fnCoef, x, y)
+out = 0;
+for k = 1:length(fnAr)
+    fnk = fnAr{k};
+    out = out + fnCoef(k)*fnk(x,y); 
 end
 
-% Interpolate over area
-if nargin == 3 && strcmp(flag, 'fn')
-    
-end

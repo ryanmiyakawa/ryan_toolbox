@@ -7,4 +7,4 @@ sizb = size(b);
 
 sizeout = [max(siza(1), sizb(1)), max(siza(2), sizb(2))]; 
 
-out = ifft2( fft2(a, sizeout(1), sizeout(2)) .* fft2(b, sizeout(1), sizeout(2)));
+out = ifftshift(ifft2( fft2(fftshift(a), sizeout(1), sizeout(2)) .* fft2(fftshift(b), sizeout(1), sizeout(2))));

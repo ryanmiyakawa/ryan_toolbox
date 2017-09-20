@@ -1,8 +1,8 @@
-function out = LSUnwrap2(psi, weights)
+function [out, T, A] = LSUnwrap2(psi, weights, T, A)
 
 
 [sr, sc] = size(psi);
-if nargin == 1
+if exist('weights', 'var') ~= 1 || numel(weights) == 0
     weights = ones(size(psi));
 else
     weights = weights/max(weights(:));
@@ -26,12 +26,17 @@ v = [deltas(:);omegas(:)];
 
 
 % Make T:
-T=improved_generateT(alphas, betas);
-T(1,2)=0;
-T(1,sr+1)=0;
+if exist('T', 'var') ~= 1
+    T=improved_generateT(alphas, betas);
+    T(1,2)=0;
+    T(1,sr+1)=0;
+end
 
 % Make A:
-A=improved_generateA(alphas, betas);
+if exist('A', 'var') ~= 1
+    A=improved_generateA(alphas, betas);
+end
+
 % set first element to 0 for reference:
 V = A*v;
 V(1) = 0;

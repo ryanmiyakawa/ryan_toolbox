@@ -1,5 +1,5 @@
 % 11/2012 Ryan Miyakawa  
-% function [V,T] = GS_basis(domain, order, wflag)
+% function [V,T] = GS_basis(B, domain)
 %
 % Extends orthobasis to consider an arbitrary basis set of vectors.
 % Returns the basis vectors V and the transformation matrix T to get from
@@ -19,7 +19,7 @@ for k = 1:numV
     end
 end
 
-% New GS algorithm from wikipedia:
+% New GS algorithm:
 V = B;
 for k = 1:length(V)
     kkNorm = 1/sqrt(mipc(V{k}, V{k}, domain));
@@ -40,7 +40,14 @@ for k = 1:length(V)
 end
 T = (inv(D))'; % Ref: page 80 Example 2 of Friedberg, Insel and Spence
 
-
+%Projection
 function out = proj(u,v, domain)
 out = u*mipc(u,v,domain)/mipc(u,u,domain);
+
+%matrix inner product
+function prod = mipc(A,B, domain)  
+if nargin == 2
+    B = A;
+end
+prod = sum(sum(A.*conj(B).*domain));
 

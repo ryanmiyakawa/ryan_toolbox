@@ -1,7 +1,8 @@
-% Rotates zernike vector by using linear combination of zernikes of same
-% order
+% Rotates zernike vector by using linear combination of zernikes of same order
+%
+% Ignores piston
 
-function out = rotZernVec(in, th)
+function [out, T] = rotZernVec(in, th)
 
 nZ = length(in);
 %zIdx = 0:nZ-1;
@@ -20,16 +21,16 @@ for k = 1:length(zIdx)
     [dummy, m] = j2nm(zIdx(k));
     if m == 0
         T(k,k) = 1;
-    elseif m < 0
+    elseif m > 0
         T(k,k) = cos(m*th);
-        T(k,k-1) = sin(m*th);
-    else % m > 0
-        T(k,k) = cos(m*th);
-        T(k,k+1) = -sin(m*th);
+        T(k,k+1) = sin(m*th);
+    else % m < 0
+        T(k,k-1) = -sin(-m*th);
+        T(k,k) = cos(-m*th);
     end
 
 end
- 
+
 out = (T*(in.')).';
 
 function [n,m] = j2nm(j)
