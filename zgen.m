@@ -46,7 +46,7 @@ switch flag
         % [1 r*sin(th) r*cos(th) r^2*sin(2*th) r^2 r^2*cos(2*th), ...]
         [n, m] = j2nm(order);
         
-        rCoefs = RgenNMCoef(n,m);
+        rCoefs = RgenNMCoef(n,abs(m));
         angCoefs = AgenNMCoef(m);
         out = rCoefs' * angCoefs';
         
@@ -125,19 +125,19 @@ end
 
 % Generates a coefficient vector
 function angCoefs = AgenNMCoef(m)
-cosCoefs = zeros(1,m);
-sinCoefs = zeros(1,m);
+cosCoefs = zeros(1,abs(m));
+sinCoefs = zeros(1,abs(m));
 if m > 0
     cosCoefs(m) = 1;
 elseif m < 0
-    sinCoefs(m) = -1;
+    sinCoefs(abs(m)) = -1;
 
 elseif m == 0
     angCoefs = 1;
     return
 end
 angCoefs = [cosCoefs; sinCoefs];
-angCoefs = angCoefs(:);
+angCoefs = [0;angCoefs(:)];
 
 function [n,m] = j2nm(j)
 % j = j+1; % 0 is piston
