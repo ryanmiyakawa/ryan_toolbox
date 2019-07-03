@@ -5,7 +5,7 @@
 
 function Zv = zgen_pt(order, x, y)
 
-[th r] = cart2pol(x, y);
+[th, r] = cart2pol(x, y);
 [n, m] = j2nm(order);
 
 p = (n-abs(m))/2;
