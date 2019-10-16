@@ -77,7 +77,8 @@ switch flag
         for k = 1:order
             [n, m] = j2nm(k);
             zRTH = ZgenNM(n,m);
-            out(:, k+1) = zRTH(sqrt(X(:).^2 + Y(:).^2), atan2(Y(:),X(:))).*domain(:);
+            [TH, R] = cart2pol(X(:), Y(:));
+            out(:, k+1) = zRTH(R,TH).*domain(:);
         end
 end
 

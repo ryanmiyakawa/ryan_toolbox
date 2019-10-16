@@ -18,7 +18,8 @@ end
 B = zgen(mask, N, 'basis');
 
 % Compute Linear LS reconstruction using SVD
-orders = pinv(B)*(mask(:).*wave(:));
+orders =pinv(B(mask==1,:))*wave(mask==1);
+% orders = pinv(B)*(mask(:).*wave(:));
 
 rmsMWaves = 1000*zernRMS(orders, mask)
 fprintf('RMS magnitude in %d Zernikes starting from Z4 is: %0.3f mWaves\n', ...
