@@ -4,7 +4,7 @@ function sheet_data = getGSheet(gID, sheet_name)
 url_name = sprintf('https://docs.google.com/spreadsheets/d/%s/gviz/tq?tqx=out:csv&sheet=%s',...
     gID, sheet_name);
 
-sheet_data = webread(url_name);
+sheet_data = table2cell(webread(url_name));
 
 
 for i = 1:numel(sheet_data)
