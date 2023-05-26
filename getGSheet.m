@@ -12,7 +12,5 @@ for i = 1:numel(sheet_data)
     
     if isnumeric(value) && isnan(value)
         sheet_data{i} = '';
-    elseif isnumeric(value)
-        sheet_data{i} = sprintf('<%g>', value);
     end
 end
