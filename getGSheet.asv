@@ -1,0 +1,16 @@
+function sheet_data = getGSheet(gID, sheet_name, export)
+
+
+url_name = sprintf('https://docs.google.com/spreadsheets/d/%s/gviz/tq?tqx=out:csv&sheet=%s',...
+    gID, sheet_name);
+
+sheet_data = table2cell(webread(url_name));
+
+
+for i = 1:numel(sheet_data)
+    value = sheet_data{i};
+    
+    if isnumeric(value) && isnan(value)
+        sheet_data{i} = '';
+    end
+end
